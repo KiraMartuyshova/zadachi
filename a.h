@@ -1,18 +1,18 @@
 #pragma once 
 #include <iostream>
 
-//Класс чисел с абсолютной погрешностью
+//ГЉГ«Г Г±Г± Г·ГЁГ±ГҐГ« Г± Г ГЎГ±Г®Г«ГѕГІГ­Г®Г© ГЇГ®ГЈГ°ГҐГёГ­Г®Г±ГІГјГѕ
 
 class abs_error 
 {
 public:
-	//Конструкторы
-	abs_error(); //Конструктор по умолчанию
+	//ГЉГ®Г­Г±ГІГ°ГіГЄГІГ®Г°Г»
+	abs_error(); //ГЉГ®Г­Г±ГІГ°ГіГЄГІГ®Г° ГЇГ® ГіГ¬Г®Г«Г·Г Г­ГЁГѕ
 	abs_error(double x);
 	abs_error(double x, double y);
-	abs_error(const abs_error& other); //Конструктор копирования
+	abs_error(const abs_error& other); //ГЉГ®Г­Г±ГІГ°ГіГЄГІГ®Г° ГЄГ®ГЇГЁГ°Г®ГўГ Г­ГЁГї
 	
-	//Перегруженные операторы арифметических операций
+	//ГЏГҐГ°ГҐГЈГ°ГіГ¦ГҐГ­Г­Г»ГҐ Г®ГЇГҐГ°Г ГІГ®Г°Г» Г Г°ГЁГґГ¬ГҐГІГЁГ·ГҐГ±ГЄГЁГµ Г®ГЇГҐГ°Г Г¶ГЁГ©
 	abs_error operator=(const abs_error& other); 
 	abs_error operator+=(const abs_error& other); 
 	abs_error operator/=(const abs_error& other); 
@@ -23,19 +23,19 @@ public:
 	abs_error operator*(const abs_error& other) const;
 	abs_error operator/(const abs_error& other) const;
 	
-	//Перегруженный оператор равенства для сравнения двух объектов
+	//ГЏГҐГ°ГҐГЈГ°ГіГ¦ГҐГ­Г­Г»Г© Г®ГЇГҐГ°Г ГІГ®Г° Г°Г ГўГҐГ­Г±ГІГўГ  Г¤Г«Гї Г±Г°Г ГўГ­ГҐГ­ГЁГї Г¤ГўГіГµ Г®ГЎГєГҐГЄГІГ®Гў
 	bool operator==(const abs_error& other) const; 
 	
-	//Перегруженный оператор <<, позволяющий выводить объекты класса в поток 
+	//ГЏГҐГ°ГҐГЈГ°ГіГ¦ГҐГ­Г­Г»Г© Г®ГЇГҐГ°Г ГІГ®Г° <<, ГЇГ®Г§ГўГ®Г«ГїГѕГ№ГЁГ© ГўГ»ГўГ®Г¤ГЁГІГј Г®ГЎГєГҐГЄГІГ» ГЄГ«Г Г±Г±Г  Гў ГЇГ®ГІГ®ГЄ 
 	friend std::ostream& operator<<(std::ostream& os, const abs_error& num); 
 
-	//Методы получения и установки значений
+	//ГЊГҐГІГ®Г¤Г» ГЇГ®Г«ГіГ·ГҐГ­ГЁГї ГЁ ГіГ±ГІГ Г­Г®ГўГЄГЁ Г§Г­Г Г·ГҐГ­ГЁГ©
 	double Get_Num() const;			
 	double Get_Err() const;
 	void Set_Num(double x);
 	void Set_Err(double x);
 
-	//Методы вывода
+	//ГЊГҐГІГ®Г¤Г» ГўГ»ГўГ®Г¤Г 
 	void Print_Num();
 	void Print_Err();
 	void Print();
