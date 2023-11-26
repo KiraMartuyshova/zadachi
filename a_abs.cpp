@@ -1,6 +1,6 @@
 #include "a.h"
 #include <iostream>
-
+//Связан с файлом "test3.cpp"
 //Класс чисел с абсолютной погрешностью
 
 abs_error::abs_error() { 
