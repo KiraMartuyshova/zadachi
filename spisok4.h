@@ -1,5 +1,5 @@
 #include <iostream>
-#include "a.h" //Для проверки работы с классом чисел с абсолютной погрешностью
+#include "a.h" 
 
 //Однонаправленный список, внешний итератор
 //Сортировка списка методом insertion (по возрастанию и убыванию), проверка на корректную работу сортировки
@@ -67,11 +67,14 @@ public:
     //Метод для удаления элемента после указанного итератора
     void erase(Node<T>* iter);
 	
-	//Сортировка insertion (вставками)
-	void insertionSort(bool value);
-	
+	//Сортировка
+	template <typename Compare>
+    void insertionSort(Compare comp);
+
 	//Проверка сортировки
-	bool proverka(bool value) const;
+    template <typename Compare>
+    bool proverka(Compare comp) const;
+
 };
 
 template <typename T>
@@ -230,65 +233,46 @@ List<T>* merge_lists(const List<T>& list1, const List<T>& list2, Node<T>* startN
 }
 
 template <typename T>
-void List<T>::insertionSort(bool value) {
+template <typename Compare>
+void List<T>::insertionSort(Compare comp) {
     if (head == nullptr || head->next == nullptr) {
-        return; //если список пуст или содержит только один элемент, он уже отсортирован
+        return; // если список пуст или содержит только один элемент, он уже отсортирован
     }
-
-    Node<T>* sort = nullptr; //инициализация списка, содержащего отсортированные элементы
-    Node<T>* current = head;
-
+    Node<T>* sort = nullptr; // инициализация списка, содержащего отсортированные элементы
+    Node<T>* current = head; 
     while (current != nullptr) {
-        Node<T>* next = current->next;
-
-        if (value) {
-			if (sort == nullptr || current->data < sort->data) {
+        Node<T>* next = current->next; 
+        // вставляем текущий элемент в отсортированный список с использованием функции сравнения
+        if (sort == nullptr || comp(current->data, sort->data)) {
             current->next = sort;
             sort = current; 
         } else {
             Node<T>* sortCurr = sort; 
-            while (sortCurr->next != nullptr && sortCurr->next->data < current->data) {
+            while (sortCurr->next != nullptr && !comp(current->data, sortCurr->next->data)) {
                 sortCurr = sortCurr->next;
             }
             current->next = sortCurr->next;
             sortCurr->next = current;
         }
-	}
-	
-		if (!value) {
-			if (sort == nullptr || current->data > sort->data) {
-            current->next = sort;
-            sort = current; 
-        } else {
-            Node<T>* sortCurr = sort; 
-            while (sortCurr->next != nullptr && sortCurr->next->data > current->data) {
-                sortCurr = sortCurr->next;
-            }
-            current->next = sortCurr->next;
-            sortCurr->next = current;
-        }
-	}
-	
         current = next;
     }
-
-    head = sort;
+    head = sort; 
 }
 
 template <typename T>
-bool List<T>::proverka(bool value) const {
+template <typename Compare>
+bool List<T>::proverka(Compare comp) const {
     if (head == nullptr || head->next == nullptr) {
-        return true; //пустой список или один элемент - считаем, что отсортированы
+        return true;
     }
 
     Node<T>* current = head;
     while (current->next != nullptr) {
-        if ((value && current->data > current->next->data) || 
-            (!value && current->data < current->next->data)) {
-            return false; //если порядок не соблюдается - список не отсортирован
+        if (!comp(current->data, current->next->data)) {
+            return false;
         }
         current = current->next;
     }
 
-    return true; //если не нашлось обратного порядка - считаем, что отсортированы
+    return true;
 }
