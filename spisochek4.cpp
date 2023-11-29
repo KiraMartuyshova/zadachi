@@ -38,9 +38,17 @@ void Program() { //Создание односвязного списка кла
   
     cout << "Исходный список: ";
     spisok.print(); 
-
-    spisok.insertionSort(true); //Сортируем список по возрастанию методом insertion
-	//spisok.insertionSort(false); //Сортируем список по убыванию методом insertion
+	
+	auto greater = []<typename T>(T a, T b) {
+            return (abs(a) <= abs(b));
+	};
+		
+	auto less = []<typename T>(T a, T b) {
+            return (abs(a) >= abs(b));
+	};
+	
+	spisok.insertionSort(greater); //Сортируем список по возрастанию методом insertion
+	//spisok.insertionSort(less); //Сортируем список по убыванию методом insertion
 
     cout << "Отсортированный список: ";
     spisok.print(); 
@@ -50,13 +58,13 @@ void Program() { //Создание односвязного списка кла
     cout << "Время выполнения моей программы: " << time1.count() << " секунд" << endl;
 	
 	//Проверка сортировки по возрастанию
-	bool res = spisok.proverka(true);
+	bool res = spisok.proverka(greater);
 	if(!res) {
 		cout << "Неверная сортировка :( ";
 	}
 	
 	/*/Проверка сортировки по убыванию
-	bool res1 = spisok.proverka(false);
+	bool res1 = spisok.proverka(less);
 	if(!res1) {
 		cout << "Неверная сортировка :( ";
 	}*/
