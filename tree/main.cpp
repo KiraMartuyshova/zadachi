@@ -45,7 +45,33 @@ int main() {
     //Попытка открыть пустой файл
     string filename = "file.txt";
     tree1.readFile(filename);
+	
+	//Слово для вставки
+    string word = "cherry";
+
+    //Вставка слова в дерево
+	int foundValue;
+    tree.insert(word);
+	if (tree.find(word, foundValue)) {
+        cout << "Значение для ключа '" << word << "' найдено: " << foundValue << endl;
+    } else {
+        cout << "Значение для ключа '" << word << "' не найдено." << endl;
+    }
+
+	//Удаление слова из дерева
+	tree.remove(word);
+
+    // Поиск узла по ключу
+    
+    if (tree.find(word, foundValue)) {
+        cout << "Значение для ключа '" << word << "' найдено: " << foundValue << endl;
+    } else {
+        cout << "Значение для ключа '" << word << "' не найдено." << endl;
+    }
+	
+	cout << endl;
     //ЗАВЕРШЕНИЕ ТЕСТА ОШИБОК
+
 
 
     //Измерение времени для реализации с моим 2-3 деревом
@@ -81,7 +107,7 @@ int main() {
             for (char& c : word) {
                 c = tolower(c);
                 if (ispunct(c)) {
-                    c = '\0'; 
+                    c = ' '; 
                 }
             }
             if (!word.empty()) {
@@ -91,7 +117,6 @@ int main() {
     }
 
     file.close(); //Закрытие файла
-
     cout << "\nЧастота встречаемости слов в тексте для STL:" << endl;
     for (const auto& pair : dictionary1) {
         cout << "Слово: " << pair.first << "; Частота: " << pair.second << endl;
@@ -103,6 +128,10 @@ int main() {
 		
     //Вызов проверки совпадения частотных словарей
     Equality(dictionary, dictionary1);
+    cout << endl;
 
+    //Конвертация бинарного дерева из 2-3 дерева
+    TwoThreeTree<string, int>::BTree* binaryRoot = dictionary.convert();
+	
     return 0;
 }
