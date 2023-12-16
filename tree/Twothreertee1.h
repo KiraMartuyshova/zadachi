@@ -2,6 +2,7 @@
 #include <fstream>
 #include <string>
 #include <cctype>
+#include <queue>
 
 //Реализация 2-3 дерева и частотного словаря, обработка исключения открытия несуществующего и пустого файлов
 using namespace std;
@@ -43,6 +44,65 @@ private:
 	}
   
 public:
+    //Бинарное дерево
+    struct BTree {
+        Key key;
+        BTree* left;
+        BTree* right;
+
+        BTree(Key k) : key(k), left(nullptr), right(nullptr) {}
+    };
+	
+	void PrintBTree(BTree* a){
+		if (a !=NULL){
+			PrintBTree(a->left);
+			cout << a->key << " ";
+			PrintBTree(a->right);
+		}
+		else{
+			return;
+		}
+	}
+
+    //Метод конвертации бинарного дерева из 2-3 дерева
+    BTree* convert() {
+        if (!root) return nullptr;
+		int i =0;
+        BTree* binaryRoot = new BTree(root->key);
+        queue<pair<Node*, BTree*>> q;
+        q.push({root, binaryRoot});
+		i++;
+
+        while (!q.empty()) {
+            Node* curr = q.front().first;
+            BTree* binaryCurr = q.front().second;
+            q.pop();
+			
+            if (curr->left) {
+                binaryCurr->left = new BTree(curr->left->key);
+                q.push({curr->left, binaryCurr->left});
+				i++;
+            }
+
+            if (curr->middle) {
+                binaryCurr->right = new BTree(curr->middle->key);
+                q.push({curr->middle, binaryCurr->right});
+				i++;
+            }
+
+            if (curr->right) {
+                BTree* temp = new BTree(curr->right->key);
+                temp->left = binaryCurr->right;
+                binaryCurr->right = temp;
+                q.push({curr->right, temp});
+				i++;
+            }
+        }
+		cout << "Вывод всех слов, добавленных в дерево (после конвертации из 2-3 дерева в бинарное): " << endl;
+		PrintBTree(binaryRoot);
+        return binaryRoot;
+    }
+
 	TwoThreeTree() : root(nullptr) {}
   
 	//Поиск узла по ключу и присваивание значения ключа переменной 
@@ -73,42 +133,20 @@ public:
 };
 
 template <class Key, class Value>
-class BTree {
-private:
-    //Предварительное объявление структуры Node из TwoThreeTree
-    template <class K, class V> struct TwoThreeTree;
-
-    struct BNode {
-        Key key;
-        Value value;
-        BNode* left;
-        BNode* right;
-
-        BNode(Key k, Value v) : key(k), value(v), left(nullptr), right(nullptr) {}
-    };
-
-    BNode* BRoot;
-
-    //Функция для преобразования узла из 2-3 дерева в узел бинарного дерева
-    BNode* convert(typename TwoThreeTree<Key, Value>::Node* node);
-
-};
-
-template <class Key, class Value>
 typename TwoThreeTree<Key, Value>::Node* TwoThreeTree<Key, Value>::findNode(Node* node, Key key) const { 
-	if (node == nullptr) { //если текущий узел пуст, то ключ не найден в данной ветви дерева 
-			return nullptr;
-	}
-	if (key == node->key) { //если ключ совпадает с ключом текущего узла, то нужный ключ найден
-		return node;
-	} else if (key < node->key) { //если ключ меньше ключа текущего узла, поиск продолжается в левом поддереве вызовом рекурсии для левого поддерева
-		return findNode(node->left, key);
-	} else if (key > node->key) { 
-		return findNode(node->middle, key);
-	} else { //если ключ больше ключа правого поддерева, поиск продолжается в правом поддереве вызовом рекурсии для правого поддерева
-		return findNode(node->right, key);
-	}
-	return node;
+  if (node == nullptr) { //если текущий узел пуст, то ключ не найден в данной ветви дерева 
+      return nullptr;
+  }
+  if (key == node->key) { //если ключ совпадает с ключом текущего узла, то нужный ключ найден
+    return node;
+  } else if (key < node->key) { //если ключ меньше ключа текущего узла, поиск продолжается в левом поддереве вызовом рекурсии для левого поддерева
+    return findNode(node->left, key);
+  } else if (key > node->key) { 
+    return findNode(node->middle, key);
+  } else { //если ключ больше ключа правого поддерева, поиск продолжается в правом поддереве вызовом рекурсии для правого поддерева
+    return findNode(node->right, key);
+  }
+  return node;
 }
 
 template <class Key, class Value>
@@ -273,7 +311,7 @@ void TwoThreeTree<Key, Value>::readFile(const string& filename) {
             for (char& c : word) {
                 c = tolower(c); //приведение к нижнему регистру
                 if (ispunct(c)) {
-                    c = '\0'; //замена знаков препинания пробелами
+                    c = ' '; //замена знаков препинания пробелами
                 }
             }
 
@@ -314,26 +352,3 @@ void TwoThreeTree<Key, Value>::clear(Node* node) {
 		delete node;
 	}
 }
-
-template <class Key, class Value>
-typename BTree<Key, Value>::BNode* BTree<Key, Value>::convert(typename TwoThreeTree<Key, Value>::Node* node) {
-    if (node == nullptr) {
-        return nullptr;
-    }
-
-    BNode* newBNode = new BNode(node->key, node->value);
-
-    // Если узел в 2-3 дереве - 2-узел
-    if (!node->isThreeNode()) {
-        newBNode->left = convert(node->left);
-        newBNode->right = convert(node->middle);
-    }
-    // Если узел в 2-3 дереве - 3-узел
-    else {
-        newBNode->left = convert(node->left);
-        newBNode->right = convert(node->right);
-    }
-
-    return newBNode;
-}
-
