@@ -81,7 +81,7 @@ int main() {
             for (char& c : word) {
                 c = tolower(c);
                 if (ispunct(c)) {
-                    c = ' '; 
+                    c = '\0'; 
                 }
             }
             if (!word.empty()) {
